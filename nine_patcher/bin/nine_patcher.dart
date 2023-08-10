@@ -4,6 +4,7 @@ import 'package:image/image.dart';
 import 'package:nine_patcher/nine_patcher.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
+import 'package:args/args.dart';
 
 // Parses the scale from a path like '/blah/Nx/image.9.png'.
 // Returns null if the scale is not present.
@@ -22,14 +23,29 @@ String baseNameWithNewExtension(input) {
       .replaceFirstMapped(RegExp(r'\.9(\.[^\.]+)$'), (m) => m[1]!);
 }
 
-void main(List<String> args) async {
-  if (args.isEmpty) {
+void main(List<String> arguments) async {
+  final parser = ArgParser()
+    ..addFlag("metadata",
+        negatable: true,
+        defaultsTo: true,
+        help: "Write metadata to a .9.json file")
+    ..addFlag("image",
+        negatable: true,
+        defaultsTo: true,
+        help: "Write the naked image to a .png file")
+    ..addFlag("help", negatable: false, abbr: 'h');
+
+  ArgResults args = parser.parse(arguments);
+
+  if (args.rest.isEmpty || args["help"]) {
     print('Usage: nine_patcher <path to 9-patch image> [output directory]');
+    print(parser.usage);
+
     return;
   }
 
-  final input = path.absolute(args[0]);
-  final output = args.length == 2 ? args[1] : path.dirname(input);
+  final input = path.absolute(args.rest[0]);
+  final output = args.rest.length == 2 ? args.rest[1] : path.dirname(input);
 
   if (!await Directory(output).exists()) {
     print('Output directory "$output" does not exist.');
@@ -37,11 +53,6 @@ void main(List<String> args) async {
   }
 
   final outputImage = path.join(output, baseNameWithNewExtension(input));
-
-  if (path.equals(input, outputImage)) {
-    print('Input and output filenames are the same.');
-    return;
-  }
 
   // Decode the image file at the given path
   final image = await decodeImageFile(input);
@@ -60,18 +71,25 @@ void main(List<String> args) async {
   );
 
   // Now save the naked image, and metadata
-  print('Writing image to "$outputImage".');
-  final success = await encodeImageFile(outputImage, np.image);
-  if (!success) {
-    // TODO Get better errors :/
-    print('Unable to encode image "$outputImage".');
-    return;
+  if (args["image"]) {
+    if (path.equals(input, outputImage)) {
+      print('Input and output filenames are the same.');
+      return;
+    }
+
+    print('Writing image to "$outputImage".');
+    final success = await encodeImageFile(outputImage, np.image);
+    if (!success) {
+      // TODO Get better errors :/
+      print('Unable to encode image "$outputImage".');
+      return;
+    }
   }
 
-  final outputJson = path.setExtension(outputImage, '.9.json');
-  print('Writing metadata to "$outputJson".');
-  final File file = File(outputJson);
-  await file.writeAsString(jsonEncode(np.metadata));
-
-  print("$np");
+  if (args["metadata"]) {
+    final outputJson = path.setExtension(outputImage, '.9.json');
+    print('Writing metadata to "$outputJson".');
+    final File file = File(outputJson);
+    await file.writeAsString(jsonEncode(np.metadata));
+  }
 }
