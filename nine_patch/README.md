@@ -10,21 +10,32 @@ Pre-process and display nine-patch images at any display resolution.
 
 A standard nine-patch format is a PNG with a special 1 pixel border around the outside that contains the metadata for the image. 
 
+<div align="center">
+
 ![Example nine-patch PNG file named TextBox_Side.9.png](https://raw.githubusercontent.com/bramp/nine_patch/main/samples/2.0x/TextBox_Side.9.png)
+
+</div>
 
 These images can be made by numerous nine-patch editors, my favorite being [this one](https://romannurik.github.io/AndroidAssetStudio/nine-patches.html). However, this border makes it more complex to load/render the image, as well as more difficult to manage/resize the image assets (as you have to avoid resizing this 1 pixel boundary). Thus, this library decides to seperate the Image and Metadata into two files, a plain PNG file and a JSON file. The PNG can be [resized as normal to make 2.0x, 3.0x, etc](https://docs.flutter.dev/ui/assets/assets-and-images#resolution-aware), and the JSON file is scaled to the 1.0x.
 
 <div align="center">
 <table>
- <tr>
-    <td>
-    [samples/TextBox_Side.json](TODO)
-    </td>
-    <td>
-    [samples/2.0x/TextBox_Side.png](TODO)
-    </td>
- <tr>
-    <td>
+<tr>
+<td align="center">
+
+[samples/TextBox_Side.9.json](https://github.com/bramp/nine_patch/blob/main/samples/TextBox_Side.9.json)
+
+</td>
+<td align="center">
+
+[samples/2.0x/TextBox_Side.png](https://github.com/bramp/nine_patch/blob/main/samples/2.0x/TextBox_Side.png)
+<br />
+(without the 1 pixel border)
+
+</td>
+<tr>
+<td>
+
 ```json
 {
   "stretch": {
@@ -47,11 +58,14 @@ These images can be made by numerous nine-patch editors, my favorite being [this
   "scale": 2
 }
 ```
-    </td>
-    <td>
+
+</td>
+<td>
+
 ![Example nine-patch PNG file named TextBox_Side.png](https://raw.githubusercontent.com/bramp/nine_patch/main/samples/2.0x/TextBox_Side.png)
-    </td>
- </tr>
+
+</td>
+</tr>
 </table>
 </div>
 
@@ -103,8 +117,8 @@ NinePatchImage(
 
 ## TODO
 
-[ ] Support multi-scaling area nine-patches.
-[ ] Support the nine-patch metadata being stored in the PNG file itself. Currently only seperate JSON files are supported.
+- [ ] Support multi-scaling area nine-patches.
+- [ ] Support the nine-patch metadata being stored in the PNG file itself. Currently only seperate JSON files are supported.
 
 ## Licence
 
