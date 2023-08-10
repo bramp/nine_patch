@@ -1,5 +1,5 @@
 name: nine_patcher
-description: A sample command-line application.
+description: A command line tool to creates nine-patch JSON metadata files.
 version: 1.0.0
 repository: https://github.com/bramp/nine_patch
 

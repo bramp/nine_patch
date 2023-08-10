@@ -1,6 +1,6 @@
 # Nine Patcher
 
-This creates nine-patch JSON metadata files, for use with this [Flutter package](https://pub.dev/packages/nine_patch).
+A command line tool to creates nine-patch JSON metadata files, for use with this [Flutter package](https://pub.dev/packages/nine_patch).
 
 ## Workflow
 
