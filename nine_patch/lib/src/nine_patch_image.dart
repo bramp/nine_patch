@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:nine_patch_common/nine_patch_common.dart' as common;
+import 'package:path/path.dart' as path;
 
 final _log = Logger('nine_patch_image.dart');
 
@@ -83,6 +84,7 @@ class NinePatchMetadata {
 
 // A nine patch widget.
 // TODO Figure out how to test widgets.
+// TODO Create a way to ensure metadata is loaded before the widget is built.
 class NinePatchImage extends StatelessWidget {
   final ImageProvider image;
   final NinePatchMetadata metadata;
@@ -105,28 +107,97 @@ class NinePatchImage extends StatelessWidget {
     this.child,
   });
 
-  // Create a new nine-patch image from a `.9.json` asset.
-  static fromAssetMetadata({
-    key,
+  // Borrowed from flutter/3.10.6/flutter/packages/flutter/lib/src/widgets/image.dart
+  // TODO Add a errorBuilder parameter, similar to Image.
+  static Widget _debugBuildErrorWidget(BuildContext context, Object error) {
+    _log.severe(error);
+
+    return Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        const Positioned.fill(
+          child: Placeholder(
+            color: Color(0xCF8D021F),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: FittedBox(
+            child: Text(
+              '$error',
+              textAlign: TextAlign.center,
+              textDirection: TextDirection.ltr,
+              style: const TextStyle(
+                shadows: <Shadow>[
+                  Shadow(blurRadius: 1.0),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Create a new nine-patch image from a `.9.json` asset.
+  ///
+  /// The [bundle] argument may be null, in which case the [rootBundle] is used.
+  ///
+  /// The [package] argument must be non-null when fetching an asset that is
+  /// included in a package.
+  static Widget fromAssetMetadata({
+    Key? key,
     required String name,
-    margin,
-    padding,
-    child,
-  }) async {
-    final metadataFile = await rootBundle.loadString(name);
-    final metadata =
-        common.NinePatchMetadata.fromJson(json.decode(metadataFile));
+    AssetBundle? bundle,
+    String? package,
+    EdgeInsetsGeometry? margin,
+    EdgeInsetsGeometry? padding,
+    Widget? child,
+  }) {
+    assert(name.endsWith('.9.json'),
+        "We expect nine-patch metadata, which should end in '.9.json'.");
 
-    // TODO We can just guess the name.
-    assert(metadata.name != null, "Missing nine-patch image name in metadata");
+    final keyName = package == null ? name : 'packages/$package/$name';
+    final metadataFile = (bundle ?? rootBundle).loadString(keyName);
 
-    return NinePatchImage(
-      key: key,
-      image: AssetImage(metadata.name!),
-      metadata: NinePatchMetadata.from(metadata),
-      margin: margin,
-      padding: padding,
-      child: child,
+    // We can't read the metadata asset synchronously, so we have to return a
+    // FutureBuilder.
+    return FutureBuilder(
+      future: metadataFile,
+      builder: (context, snapshot) {
+        // handle errors
+        if (snapshot.hasError) {
+          return _debugBuildErrorWidget(context,
+              'Error loading metadata for $keyName: ${snapshot.error}');
+        }
+
+        if (!snapshot.hasData) {
+          // TODO Some kind of loading widget. What does Image do?
+          return const Placeholder();
+        }
+
+        final metadata =
+            common.NinePatchMetadata.fromJson(json.decode(snapshot.data!));
+
+        if (metadata.name == null) {
+          // TODO We could just guess the name.
+          return _debugBuildErrorWidget(context,
+              'Missing nine-patch image name in metadata for $keyName');
+        }
+
+        // Assume the image is in the same directory as the metadata.
+        final p = path.Context(style: path.Style.posix);
+        final imageName = p.join(p.dirname(keyName), metadata.name);
+
+        return NinePatchImage(
+          key: key,
+          image: AssetImage(imageName),
+          metadata: NinePatchMetadata.from(metadata),
+          margin: margin,
+          padding: padding,
+          child: child,
+        );
+      },
     );
   }
 
