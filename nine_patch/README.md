@@ -120,6 +120,42 @@ NinePatchImage(
 - [ ] Support multi-scaling area nine-patches.
 - [ ] Support the nine-patch metadata being stored in the PNG file itself. Currently only seperate JSON files are supported.
 
+## Development
+
+This project is a monorepo containing multiple packages. We use a `Makefile` to streamline common development tasks.
+
+### Running Tests and Analysis
+
+To run all checks (formatting, analysis, and tests) across all packages:
+
+```bash
+make all
+```
+
+Individual tasks can be run as follows:
+
+```bash
+make format   # Format code
+make analyze  # Run static analysis
+make test     # Run all tests
+make fix      # Apply automated fixes
+```
+
+### Publishing
+
+Publishing is automated via GitHub Actions when a new tag is pushed. The tag should follow the format `[package_name]-v[X.Y.Z]`. For example:
+
+- `nine_patch-v1.1.0`
+- `nine_patch_common-v1.1.0`
+- `nine_patcher-v1.1.0`
+
+Before publishing, it is recommended to run a dry-run locally:
+
+```bash
+cd nine_patch
+dart pub publish --dry-run
+```
+
 ## Licence
 
 The example image is from https://penzilla.itch.io/basic-gui-bundle.
