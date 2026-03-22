@@ -11,7 +11,7 @@ on:
 # Publish using the reusable workflow from dart-lang.
 jobs:
   publish_nine_patch:
-    if: startsWith(github.ref, 'refs/tags/nine_patch-v')
+    if: startsWith(github.ref_name, 'nine_patch-v')
     permissions:
       id-token: write # Required for authentication using OIDC
     uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
@@ -19,7 +19,7 @@ jobs:
       working-directory: nine_patch
 
   publish_nine_patch_common:
-    if: startsWith(github.ref, 'refs/tags/nine_patch_common-v')
+    if: startsWith(github.ref_name, 'nine_patch_common-v')
     permissions:
       id-token: write # Required for authentication using OIDC
     uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
@@ -27,7 +27,7 @@ jobs:
       working-directory: nine_patch_common
 
   publish_nine_patcher:
-    if: startsWith(github.ref, 'refs/tags/nine_patcher-v')
+    if: startsWith(github.ref_name, 'nine_patcher-v')
     permissions:
       id-token: write # Required for authentication using OIDC
     uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1

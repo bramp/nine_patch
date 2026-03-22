@@ -1,7 +1,7 @@
 name: nine_patch
 description: Flutter package for displaying nine-patch images.
 version: 1.1.0
-publish_to: https://pub.dev
+# publish_to: https://pub.dev
 repository: https://github.com/bramp/nine_patch
 
 environment:
