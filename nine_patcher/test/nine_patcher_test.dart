@@ -4,7 +4,7 @@ import '../bin/nine_patcher.dart';
 
 void main() {
   group('scaleFromPath', () {
-    var inputsToExpected = {
+    final inputsToExpected = {
       '/image.png': null,
       '/4x/image.png': 4,
       '/4.0x/image.png': 4,
@@ -12,14 +12,14 @@ void main() {
       '/1/image.png': null,
     };
     inputsToExpected.forEach((input, expected) {
-      test("$input -> $expected", () {
+      test('$input -> $expected', () {
         expect(scaleFromPath(input), expected);
       });
     });
   });
 
   group('baseNameWithNewExtension', () {
-    var inputsToExpected = {
+    final inputsToExpected = {
       // Expect a replacement
       'image.9.png': 'image.png',
       '/blah/blah/blah/image.9.png': 'image.png',
@@ -37,7 +37,7 @@ void main() {
       '/image.9.1.2.png': 'image.9.1.2.png',
     };
     inputsToExpected.forEach((input, expected) {
-      test("$input -> $expected", () {
+      test('$input -> $expected', () {
         expect(baseNameWithNewExtension(input), expected);
       });
     });

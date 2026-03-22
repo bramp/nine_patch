@@ -1,23 +1,23 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:args/args.dart';
 import 'package:image/image.dart';
 import 'package:nine_patcher/nine_patcher.dart';
-import 'dart:io';
 import 'package:path/path.dart' as path;
-import 'package:args/args.dart';
 
 // Parses the scale from a path like '/blah/Nx/image.9.png'.
 // Returns null if the scale is not present.
 double? scaleFromPath(String path) {
-  RegExp exp = RegExp(r'/([\d\.]+)x/[^/]*$');
-  RegExpMatch? match = exp.firstMatch(path);
+  final exp = RegExp(r'/([\d\.]+)x/[^/]*$');
+  final match = exp.firstMatch(path);
 
   return match != null ? double.tryParse(match[1]!) : null;
 }
 
 // Turns a name like '/blah/image.9.png' into 'image.png'.
 // If the name does not end in '.9.png', the basename is returned unchanged.
-String baseNameWithNewExtension(input) {
+String baseNameWithNewExtension(String input) {
   return path
       .basename(input)
       .replaceFirstMapped(RegExp(r'\.9(\.[^\.]+)$'), (m) => m[1]!);
@@ -25,19 +25,21 @@ String baseNameWithNewExtension(input) {
 
 void main(List<String> arguments) async {
   final parser = ArgParser()
-    ..addFlag("metadata",
-        negatable: true,
-        defaultsTo: true,
-        help: "Write metadata to a .9.json file")
-    ..addFlag("image",
-        negatable: true,
-        defaultsTo: true,
-        help: "Write the naked image to a .png file")
-    ..addFlag("help", negatable: false, abbr: 'h');
+    ..addFlag(
+      'metadata',
+      defaultsTo: true,
+      help: 'Write metadata to a .9.json file',
+    )
+    ..addFlag(
+      'image',
+      defaultsTo: true,
+      help: 'Write the naked image to a .png file',
+    )
+    ..addFlag('help', negatable: false, abbr: 'h');
 
-  ArgResults args = parser.parse(arguments);
+  final args = parser.parse(arguments);
 
-  if (args.rest.isEmpty || args["help"]) {
+  if (args.rest.isEmpty || (args['help'] as bool)) {
     print('Usage: nine_patcher <path to 9-patch image> [output directory]');
     print(parser.usage);
 
@@ -71,7 +73,7 @@ void main(List<String> arguments) async {
   );
 
   // Now save the naked image, and metadata
-  if (args["image"]) {
+  if (args['image'] as bool) {
     if (path.equals(input, outputImage)) {
       print('Input and output filenames are the same.');
       return;
@@ -80,16 +82,16 @@ void main(List<String> arguments) async {
     print('Writing image to "$outputImage".');
     final success = await encodeImageFile(outputImage, np.image);
     if (!success) {
-      // TODO Get better errors :/
+      // TODO(bramp): Get better errors :/
       print('Unable to encode image "$outputImage".');
       return;
     }
   }
 
-  if (args["metadata"]) {
+  if (args['metadata'] as bool) {
     final outputJson = path.setExtension(outputImage, '.9.json');
     print('Writing metadata to "$outputJson".');
-    final File file = File(outputJson);
+    final file = File(outputJson);
     await file.writeAsString(jsonEncode(np.metadata));
   }
 }

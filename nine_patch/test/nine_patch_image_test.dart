@@ -7,12 +7,12 @@ import 'package:nine_patch_common/nine_patch_common.dart' as common;
 
 void main() {
   test('scale', () {
-    final src = common.NinePatchMetadata(
-      dimensions: const Point(100, 100),
-      stretch: const Rectangle(25, 33, 33, 50),
-      contents: const Rectangle(10, 20, 80, 40),
-      name: "image.png",
-      scale: 2.0,
+    const src = common.NinePatchMetadata(
+      dimensions: Point(100, 100),
+      stretch: Rectangle(25, 33, 33, 50),
+      contents: Rectangle(10, 20, 80, 40),
+      name: 'image.png',
+      scale: 2,
     );
 
     final actual = NinePatchMetadata.from(src);

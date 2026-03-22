@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: "pub"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "pub"
+    directory: "/nine_patch"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "pub"
+    directory: "/nine_patch_common"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "pub"
+    directory: "/nine_patcher"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

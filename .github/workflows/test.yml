@@ -1,0 +1,38 @@
+name: Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_call:
+
+jobs:
+  unit_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache default Flutter artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache/
+            /opt/hostedtoolcache/flutter/
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Format
+        run: make format
+
+      - name: Analyze
+        run: make analyze
+
+      - name: Run tests
+        run: make test-app-ci

@@ -8,7 +8,7 @@ A command line tool to creates nine-patch JSON metadata files, for use with this
 * Run:
 
 ```shell
-dart run nine_patcher path/to/image.9.png output/dir 
+dart run nine_patcher path/to/image.9.png output/dir
 ```
 
 This will take the `image.9.png` and create two files in `output/dir`:

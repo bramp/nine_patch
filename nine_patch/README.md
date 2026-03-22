@@ -8,7 +8,7 @@ Pre-process and display nine-patch images at any display resolution.
 
 ## Background
 
-A standard nine-patch format is a PNG with a special 1 pixel border around the outside that contains the metadata for the image. 
+A standard nine-patch format is a PNG with a special 1 pixel border around the outside that contains the metadata for the image.
 
 <div align="center">
 

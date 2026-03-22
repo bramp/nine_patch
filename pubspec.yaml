@@ -1,0 +1,12 @@
+name: nine_patch_workspace
+
+environment:
+  sdk: "^3.11.3"
+
+workspace:
+  - nine_patch
+  - nine_patch_common
+  - nine_patcher
+
+dev_dependencies:
+  very_good_analysis: ^10.2.0

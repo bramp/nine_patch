@@ -1,21 +1,22 @@
 name: nine_patcher
 description: A command line tool to creates nine-patch JSON metadata files.
-version: 1.0.1
+version: 1.1.0
 repository: https://github.com/bramp/nine_patch
 
 environment:
-  sdk: ^3.0.6
+  sdk: ^3.11.3
+
+resolution: workspace
 
 # Add regular dependencies here.
 dependencies:
-  args: ^2.4.2
-  image: ^4.0.17
-  json_annotation: ^4.8.1
-  nine_patch_common: ^1.0.0
-  path: ^1.8.3
+  args: ^2.7.0
+  image: ^4.8.0
+  json_annotation: ^4.11.0
+  nine_patch_common: ^1.1.0
+  path: ^1.9.1
 
 dev_dependencies:
-  lints: ^2.0.0
-  test: ^1.21.0
-  build_runner: ^2.3.3
-  json_serializable: ^6.6.0
+  build_runner: ^2.13.1
+  json_serializable: ^6.13.1
+  test: ^1.30.0

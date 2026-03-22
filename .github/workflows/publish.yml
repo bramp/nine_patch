@@ -1,0 +1,35 @@
+# .github/workflows/publish.yml
+name: Publish to pub.dev
+
+on:
+  push:
+    tags:
+    - 'nine_patch-v[0-9]+.[0-9]+.[0-9]+*'
+    - 'nine_patch_common-v[0-9]+.[0-9]+.[0-9]+*'
+    - 'nine_patcher-v[0-9]+.[0-9]+.[0-9]+*'
+
+# Publish using the reusable workflow from dart-lang.
+jobs:
+  publish_nine_patch:
+    if: startsWith(github.ref, 'refs/tags/nine_patch-v')
+    permissions:
+      id-token: write # Required for authentication using OIDC
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    with:
+      working-directory: nine_patch
+
+  publish_nine_patch_common:
+    if: startsWith(github.ref, 'refs/tags/nine_patch_common-v')
+    permissions:
+      id-token: write # Required for authentication using OIDC
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    with:
+      working-directory: nine_patch_common
+
+  publish_nine_patcher:
+    if: startsWith(github.ref, 'refs/tags/nine_patcher-v')
+    permissions:
+      id-token: write # Required for authentication using OIDC
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    with:
+      working-directory: nine_patcher
